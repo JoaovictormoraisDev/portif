@@ -1,460 +1,661 @@
-<!doctype html>
-<html lang="pt-br">
+<!DOCTYPE html>
+<html lang="pt-br" class="scroll-pt-20">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>João Victor - Portfólio Interativo</title>
+  <title>João Victor - Portfólio Code Ninja</title>
 
-  <!-- Tailwind + Font Awesome + Google Fonts -->
+  <!-- Tailwind (utilizado apenas para utilitários já que o CSS está custom) + Font Awesome + Google Fonts -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
-    body { font-family: 'Poppins', sans-serif; }
+    :root {
+      --primary-1: #06b6d4; /* ciano */
+      --primary-2: #2563eb; /* azul */
+      --primary-3: #4338ca; /* índigo */
+      --bg-dark: #0f172a;
+      --panel: rgba(15, 23, 42, 0.6);
+      --muted: #cbd5e1;
+    }
 
-    /* Scroll Reveal Animation */
-    .reveal { opacity:0; transform:translateY(50px); transition: all 0.8s ease-out; }
+    /* Base */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--bg-dark);
+      color: #e2e8f0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .code-font { font-family: 'Space Mono', monospace; }
+
+    /* Gradiente de texto azul */
+    .gradient-text {
+      background: linear-gradient(90deg, var(--primary-1), var(--primary-2), var(--primary-3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* Componentes */
+    header {
+      background: rgba(2,6,23,0.65);
+      backdrop-filter: blur(6px);
+    }
+    .btn-gradient {
+      background: linear-gradient(90deg, var(--primary-1), var(--primary-2), var(--primary-3));
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(37,99,235,0.08);
+    }
+    .btn-outline {
+      border: 1px solid rgba(37,99,235,0.2);
+      color: #e6eefb;
+      background: transparent;
+    }
+
+    /* Terminal */
+    .terminal {
+      background: #0b1220;
+      border-radius: 0.5rem;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.03);
+      position: relative;
+    }
+    .terminal:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1.5rem;
+      background: #0b1a2e;
+      border-radius: 0.5rem 0.5rem 0 0;
+    }
+    .terminal:after {
+      content: "● ● ●";
+      position: absolute;
+      top: 0.35rem;
+      left: 0.75rem;
+      color: rgba(203,213,225,0.6);
+      font-size: 0.75rem;
+    }
+
+    /* Reveal */
+    .reveal { opacity:0; transform:translateY(40px); transition: all 0.8s cubic-bezier(.2,.9,.3,1); }
     .reveal.active { opacity:1; transform:translateY(0); }
 
-    /* Tilt Effect on Images */
-    .tilt { transition: transform 0.3s ease; }
-    .tilt:hover { transform: rotateY(10deg) rotateX(5deg) scale(1.05); }
+    /* Skill bars */
+    .skill-bar {
+      height: 8px;
+      background: #1f2937;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .skill-level {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary-1), var(--primary-2));
+      border-radius: 999px;
+      transition: width 1.4s ease-out;
+    }
 
-    /* Pulse Animation on Buttons */
-    .pulse:hover { animation: pulse-btn 0.6s forwards; }
-    @keyframes pulse-btn { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    /* Floating / pulse */
+    @keyframes float { 0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)} }
+    .animate-float { animation: float 4s ease-in-out infinite; }
 
-    /* Input Focus Effect */
-    input:focus, textarea:focus { box-shadow: 0 0 12px rgba(75,0,130,0.6); border-color:#4B0082; }
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.6} }
+    .animate-pulse { animation: pulse 2.5s cubic-bezier(.4,0,.6,1) infinite; }
 
-    /* Skill Bar Animations */
-    .animate-skill { width:0; height:100%; }
+    /* Typewriter */
+    .typewriter {
+      display:inline-block;
+      overflow: hidden;
+      border-right: 3px solid rgba(37,99,235,0.9);
+      white-space: nowrap;
+      animation: typing 3.5s steps(40,end), blink-caret .75s step-end infinite;
+    }
+    @keyframes typing { from{width:0} to{width:100%} }
+    @keyframes blink-caret { 50% { border-color: transparent; } }
 
-    /* Skill grow animations */
-    @keyframes growHTML { to { width: 90%; } }
-    @keyframes growJS { to { width: 80%; } }
-    @keyframes growPython { to { width: 75%; } }
-    @keyframes growGit { to { width: 70%; } }
-   
-  /* Ícones pulando */
-@keyframes pulseIcon {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-.animate-pulse-icon {
-  animation: pulseIcon 1s infinite;
-}
+    /* Hover / misc */
+    .hover-scale { transition: transform .25s ease; }
+    .hover-scale:hover { transform: scale(1.03); }
+    .hover-rotate:hover { transform: rotate(4deg); }
 
-  @keyframes blob {
-    0% { transform: translate(0px, 0px) scale(1); }
-    33% { transform: translate(30px, -50px) scale(1.1); }
-    66% { transform: translate(-20px, 20px) scale(0.9); }
-    100% { transform: translate(0px, 0px) scale(1); }
-  }
-  .animate-blob {
-    animation: blob 7s infinite;
-  }
-  .animation-delay-2000 { animation-delay: 2s; }
-  .animation-delay-4000 { animation-delay: 4s; }
-  @keyframes fade-in-up {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .animate-fade-in-up {
-    animation: fade-in-up 0.8s ease-out forwards;
-  }
-  @keyframes fade-in-left {
-    from { opacity: 0; transform: translateX(-30px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-  .animate-fade-in-left {
-    animation: fade-in-left 0.8s ease-out forwards;
-  }
-  @keyframes fade-in-right {
-    from { opacity: 0; transform: translateX(30px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-  .animate-fade-in-right {
-    animation: fade-in-right 0.8s ease-out forwards;
-  }
-  .pulse {
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
+    /* Custom scrollbar (webkit) */
+    ::-webkit-scrollbar { width: 8px; height:8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(90deg,var(--primary-2),var(--primary-3)); border-radius:999px; }
 
+    /* Back-to-top */
+    #back-to-top { transition: all .25s ease; }
+
+    /* mobile menu transform helper (tailwind class em JS manipula) */
+    .translate-x-full { transform: translateX(100%); }
+
+    /* small helper for soft panels */
+    .panel {
+      background: rgba(7,12,23,0.55);
+      border: 1px solid rgba(255,255,255,0.03);
+      backdrop-filter: blur(6px);
+    }
   </style>
 </head>
 
 <body class="antialiased scroll-smooth">
 
-  <!-- VÍDEO DE FUNDO GLOBAL -->
-  <div class="fixed inset-0 z-[-2]">
-    <video autoplay muted loop playsinline class="w-full h-full object-cover">
-      <source src="27725-365890983_small.mp4" type="video/mp4"> <!-- You can change this video source -->
-      Seu navegador não suporta vídeos.
-    </video>
-    <div class="absolute inset-0 bg-black/60"></div>
-  </div>
-  
-  <header id="header" class="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 opacity-95 backdrop-blur-md text-white px-6 py-3 fixed top-0 left-1/2 -translate-x-1/2 w-[80%] rounded-3xl mt-3 z-50 transition-all duration-300 shadow-[0_0_45px_rgba(59,130,246,0.4)]">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
-      
-    
-      <h1 class="text-2xl font-bold">João Victor</h1>
+  <!-- Header -->
+  <header id="header" class="fixed top-0 left-0 right-0 z-50 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 h-20">
+      <a href="#home" class="text-2xl font-bold tracking-wider hover:opacity-90 transition-opacity code-font">
+        <span style="color:var(--primary-1)">&lt;</span>JV<span style="color:var(--primary-1)">/&gt;</span>
+      </a>
 
-    
-      <button id="menu-btn" class="md:hidden text-2xl focus:outline-none">
-        <i class="fa-solid fa-bars"></i>
-      </button>
-  
-     
-      <nav id="menu" class="hidden md:block absolute md:static top-16 left-0 w-full md:w-auto bg-[#4B0082]/95 md:bg-transparent md:shadow-none shadow-lg md:rounded-none rounded-b-2xl transition-all duration-300">
-        <ul class="flex flex-col md:flex-row items-center gap-6 md:gap-8 text-base font-semibold py-6 md:py-0">
-          <li><a href="#home" class="flex items-center gap-2 hover:text-sky-400 transition duration-300"><i class="fa-solid fa-house w-5 text-center"></i><span>Início</span></a></li>
-          <li><a href="#sobre" class="flex items-center gap-2 hover:text-sky-400 transition duration-300"><i class="fa-solid fa-user w-5 text-center"></i><span>Sobre Mim</span></a></li>
-          <li><a href="#projetos" class="flex items-center gap-2 hover:text-sky-400 transition duration-300"><i class="fa-solid fa-briefcase w-5 text-center"></i><span>Projetos</span></a></li>
-          <li><a href="#habilidades" class="flex items-center gap-2 hover:text-sky-400 transition duration-300"><i class="fa-solid fa-code w-5 text-center"></i><span>Habilidades</span></a></li>
-          <li><a href="#contato" class="flex items-center gap-2 hover:text-sky-400 transition duration-300"><i class="fa-solid fa-address-book w-5 text-center"></i><span>Contato</span></a></li>
-        </ul>
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8">
+        <a href="#home" class="text-sm font-medium hover:opacity-90 transition-opacity">Início</a>
+        <a href="#about" class="text-sm font-medium hover:opacity-90 transition-opacity">Sobre</a>
+        <a href="#projects" class="text-sm font-medium hover:opacity-90 transition-opacity">Projetos</a>
+        <a href="#skills" class="text-sm font-medium hover:opacity-90 transition-opacity">Habilidades</a>
+        <a href="#contact" class="text-sm font-medium hover:opacity-90 transition-opacity">Contato</a>
       </nav>
-  
-      <!-- Ícones -->
+
+      <!-- Social Icons / Mobile menu button -->
       <div class="flex items-center gap-4">
-        <a href="https://github.com/joaovictormoraislima08" target="_blank" aria-label="GitHub" class="flex items-center justify-center w-11 h-11 text-base rounded-full hover:bg-sky-500/20 transition duration-300 shadow-md hover:scale-105 pulse">
+        <a href="https://github.com/joaovictormoraislima08" target="_blank" aria-label="GitHub" class="flex items-center justify-center w-10 h-10 text-lg rounded-full hover:bg-slate-800 transition-colors">
           <i class="fa-brands fa-github"></i>
         </a>
-        <a href="mailto:joaovictormorais2101@gmail.com" aria-label="E-mail" class="flex items-center justify-center w-11 h-11 text-base rounded-full hover:bg-sky-500/20 transition duration-300 shadow-md hover:scale-105 pulse">
+        <a href="mailto:joaovictormorais2101@gmail.com" aria-label="E-mail" class="flex items-center justify-center w-10 h-10 text-lg rounded-full hover:bg-slate-800 transition-colors">
           <i class="fa-solid fa-envelope"></i>
         </a>
+        <button id="menu-btn" class="md:hidden text-2xl focus:outline-none w-10 h-10 flex items-center justify-center">
+          <i class="fa-solid fa-bars"></i>
+        </button>
       </div>
     </div>
   </header>
 
-  <!-- HERO -->
-  <section id="home" class="w-full h-screen relative flex items-center justify-center">
-    <!-- Conteúdo Hero -->
-    <div class="relative z-20 text-center reveal">
-      <h1 class="text-4xl sm:text-6xl font-bold tracking-tight text-white mb-4">João Victor</h1>
-      <p class="text-xl sm:text-2xl font-medium text-sky-300 mb-8">Estudante de Programação no SENAI | 17 Anos | Apaixonado por Código</p>
-      <p class="mt-4 text-lg text-white/90 max-w-2xl mx-auto">Construindo o futuro uma linha de código por vez. Descubra meus projetos e habilidades!</p>
-      <div class="mt-10 flex items-center justify-center gap-x-6 flex-wrap">
-        <a href="#projetos" class="rounded-md bg-sky-600 px-6 py-3 text-sm font-semibold text-white shadow-xs hover:bg-sky-700 transition duration-300 pulse">Ver Projetos</a>
-        <a href="#contato" class="rounded-md border border-sky-400/50 px-6 py-3 text-sm font-semibold text-white hover:bg-sky-400/10 transition duration-300 pulse">Entrar em Contato</a>
+  <!-- Mobile Menu -->
+  <nav id="mobile-menu" class="fixed top-0 right-0 h-full w-80 max-w-[80vw] panel z-[100] transform translate-x-full transition-transform duration-300 ease-in-out md:hidden">
+    <div class="flex justify-between items-center p-5 border-b border-slate-700">
+      <h2 class="text-xl font-bold gradient-text code-font">&lt;Menu/&gt;</h2>
+      <button id="close-menu-btn" class="text-2xl text-slate-300 hover:text-red-400 transition-colors">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <ul class="flex flex-col p-5 space-y-3">
+      <li><a href="#home" class="mobile-menu-link flex items-center gap-3 text-lg text-slate-200 hover:opacity-90 p-3 rounded-md"><i class="fa-solid fa-house w-5 text-center"></i><span>Início</span></a></li>
+      <li><a href="#about" class="mobile-menu-link flex items-center gap-3 text-lg text-slate-200 hover:opacity-90 p-3 rounded-md"><i class="fa-solid fa-user w-5 text-center"></i><span>Sobre</span></a></li>
+      <li><a href="#projects" class="mobile-menu-link flex items-center gap-3 text-lg text-slate-200 hover:opacity-90 p-3 rounded-md"><i class="fa-solid fa-briefcase w-5 text-center"></i><span>Projetos</span></a></li>
+      <li><a href="#skills" class="mobile-menu-link flex items-center gap-3 text-lg text-slate-200 hover:opacity-90 p-3 rounded-md"><i class="fa-solid fa-code w-5 text-center"></i><span>Habilidades</span></a></li>
+      <li><a href="#contact" class="mobile-menu-link flex items-center gap-3 text-lg text-slate-200 hover:opacity-90 p-3 rounded-md"><i class="fa-solid fa-address-book w-5 text-center"></i><span>Contato</span></a></li>
+    </ul>
+    <div class="absolute bottom-0 left-0 right-0 p-5 border-t border-slate-700">
+      <div class="flex items-center justify-center gap-6">
+        <a href="https://github.com/joaovictormoraislima08" target="_blank" class="text-2xl text-slate-300 hover:opacity-90 transition-colors"><i class="fa-brands fa-github"></i></a>
+        <a href="mailto:joaovictormorais2101@gmail.com" class="text-2xl text-slate-300 hover:opacity-90 transition-colors"><i class="fa-solid fa-envelope"></i></a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="home" class="w-full min-h-screen relative flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-20">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <!-- Texto -->
+      <div class="relative z-10 text-center lg:text-left reveal">
+        <h1 class="text-4xl sm:text-6xl font-bold tracking-tight mb-6 gradient-text">João Victor</h1>
+        <div class="text-xl sm:text-2xl font-medium mb-8">
+          <span class="typewriter" style="color:rgba(96,165,250,0.95)">Ninja do Código no SENAI</span>
+        </div>
+        <p class="mt-4 text-lg text-slate-300 max-w-2xl mx-auto lg:mx-0">
+          Transformo café em código e ideias em produtos digitais.
+          <span class="text-slate-200 font-medium">17 anos</span> — desenvolvedor criando o futuro uma linha por vez.
+        </p>
+        <div class="mt-10 flex items-center justify-center lg:justify-start gap-x-6 flex-wrap gap-y-4">
+          <a href="#projects" class="rounded-md btn-gradient px-6 py-3 text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+            Ver Projetos <i class="fa-solid fa-arrow-down ml-2"></i>
+          </a>
+          <a href="#contact" class="rounded-md btn-outline px-6 py-3 text-sm font-semibold hover:bg-slate-800/40 transition duration-300">
+            Contatar <i class="fa-solid fa-paper-plane ml-2"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Terminal -->
+      <div class="hidden lg:flex justify-center items-center reveal hover-scale">
+        <div class="terminal w-full max-w-md h-64 p-4 pt-8 hover-rotate">
+          <div class="w-full h-full bg-slate-800/50 rounded overflow-hidden">
+            <div class="p-4 text-sm code-font">
+              <div style="color:var(--primary-1)">// Minha stack atual</div>
+              <div style="color:#94a3b8"><span style="color:var(--primary-2)">const</span> techStack = [</div>
+              <div style="color:#94a3b8; margin-left:1rem"><span style="color:#fbbf24">'HTML5'</span>,</div>
+              <div style="color:#94a3b8; margin-left:1rem"><span style="color:#fbbf24">'CSS3'</span>,</div>
+              <div style="color:#94a3b8; margin-left:1rem"><span style="color:#fbbf24">'JavaScript'</span>,</div>
+              <div style="color:#94a3b8; margin-left:1rem"><span style="color:#fbbf24">'Python'</span>,</div>
+              <div style="color:#94a3b8; margin-left:1rem"><span style="color:#fbbf24">'React'</span></div>
+              <div style="color:#94a3b8">];</div>
+              <div class="mt-4" style="color:var(--primary-1)">// O que estou aprendendo</div>
+              <div style="color:var(--primary-2)">function</div>
+              <div style="color:#94a3b8">learnNewTech() {</div>
+              <div style="color:#94a3b8; margin-left:1rem"><span style="color:var(--primary-2)">return</span> <span style="color:#fbbf24">'Node.js'</span>;</div>
+              <div style="color:#94a3b8">};</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
-<hr class="to-blue-900">
-  <!-- SOBRE MIM -->
-  <section id="sobre" class="py-20 scroll-mt-20 relative">
+
+  <!-- Sobre -->
+  <section id="about" class="py-20 scroll-mt-20 relative panel">
     <div class="max-w-5xl mx-auto px-4">
-      <h2 class="text-3xl sm:text-4xl font-extrabold text-white text-center mb-12 reveal">Sobre Mim</h2>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-center mb-12 reveal gradient-text">Sobre Mim</h2>
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div class="text-center lg:text-left reveal">
-          <img src="ninja.jpg" alt="Foto de João Victor" class="w-80 h-80 mx-auto lg:mx-0 rounded-full shadow-2xl object-cover border-4 border-sky-500 tilt">
+          <img src="https://static.photos/technology/400x400/42" alt="João Victor" class="w-64 h-64 mx-auto lg:mx-0 rounded-full shadow-2xl object-cover border-4" style="border-color:rgba(37,99,235,0.25)">
         </div>
         <div class="space-y-6 reveal">
-          <p class="text-lg text-gray-200 leading-relaxed">Olá! Meu nome é <strong>João Victor</strong>, tenho <strong>17 anos</strong> e sou estudante do <strong>SENAI</strong>, onde curso <strong>Programação de Sistemas</strong>. Desde cedo, me apaixonei pelo mundo da tecnologia e programação. Adoro resolver problemas complexos com código limpo e eficiente.</p>
-          <p class="text-lg text-gray-200 leading-relaxed">No SENAI, estou aprendendo linguagens como HTML, CSS, JavaScript, Python e mais. Meu foco é no desenvolvimento web e aplicativos, e já criei vários projetos pessoais para praticar. Fora da sala de aula, gosto de explorar novas tecnologias, contribuir em comunidades open-source e me manter atualizado com as tendências do mercado.</p>
-          <p class="text-lg text-gray-200 leading-relaxed">Estou sempre em busca de oportunidades para estagiar ou colaborar em projetos reais. Vamos conectar e criar algo incrível juntos!</p>
+          <p class="text-lg text-slate-300 leading-relaxed">
+            Olá! Sou <span class="gradient-text font-semibold">João Victor</span>, estudante de programação no <span class="gradient-text font-semibold">SENAI</span> e desenvolvedor full-stack em formação.
+          </p>
+          <p class="text-lg text-slate-300 leading-relaxed">
+            Comecei aos 15 mexendo com HTML e CSS. Hoje adoro resolver problemas com código e transformar ideias em interfaces funcionais.
+          </p>
+          <p class="text-lg text-slate-300 leading-relaxed">
+            Fora do teclado, contribuo com projetos open-source, estudo novas tecnologias e ajudo colegas que estão começando.
+          </p>
           <div class="flex flex-wrap gap-4 mt-8 justify-center lg:justify-start">
-            <span class="bg-white/10 text-sky-300 px-4 py-2 rounded-full text-sm font-semibold animate-pulse">SENAI Student</span>
-            <span class="bg-white/10 text-sky-300 px-4 py-2 rounded-full text-sm font-semibold animate-pulse delay-150">Web Development</span>
-            <span class="bg-white/10 text-sky-300 px-4 py-2 rounded-full text-sm font-semibold animate-pulse delay-300">17 Anos</span>
+            <span class="bg-slate-800/40 text-slate-200 px-4 py-2 rounded-full text-sm font-semibold border" style="border-color:rgba(99,102,241,0.08)">Estudante SENAI</span>
+            <span class="bg-slate-800/40 text-slate-200 px-4 py-2 rounded-full text-sm font-semibold border" style="border-color:rgba(56,189,248,0.06)">Full Stack Dev</span>
+            <span class="bg-slate-800/40 text-slate-200 px-4 py-2 rounded-full text-sm font-semibold border" style="border-color:rgba(71,85,105,0.06)">Tech Enthusiast</span>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- PROJETOS -->
-  <section id="projetos" class="py-20 scroll-mt-20 relative">
+  <!-- Projects -->
+  <section id="projects" class="py-20 scroll-mt-20 relative">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-center mb-12 reveal gradient-text">Meus Projetos</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Project cards -->
+        <div class="panel rounded-xl overflow-hidden shadow-lg border border-slate-700 hover:border-indigo-500 transition-all duration-300 reveal">
+          <div class="relative h-48 overflow-hidden">
+            <img src="https://static.photos/technology/600x400/1" alt="Portfolio Project" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent"></div>
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-white mb-2">Website Pessoal</h3>
+            <p class="text-slate-300 mb-4">Portfólio responsivo construído com HTML, CSS e JavaScript.</p>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="px-3 py-1 rounded-full text-xs" style="background:rgba(99,102,241,0.08); color:#a5b4fc">HTML5</span>
+              <span class="px-3 py-1 rounded-full text-xs" style="background:rgba(56,189,248,0.06); color:#67e8f9">CSS3</span>
+              <span class="px-3 py-1 rounded-full text-xs" style="background:rgba(250,204,21,0.08); color:#facc15">JavaScript</span>
+            </div>
+            <a href="#" class="inline-flex items-center text-sm font-medium gradient-text hover:opacity-90 transition-colors">
+              Ver Projeto <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="panel rounded-xl overflow-hidden shadow-lg border border-slate-700 hover:border-indigo-500 transition-all duration-300 reveal">
+          <div class="relative h-48 overflow-hidden">
+            <img src="https://static.photos/technology/600x400/2" alt="Python Calculator" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent"></div>
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-white mb-2">Calculadora em Python</h3>
+            <p class="text-slate-300 mb-4">Aplicação com interface GUI feita em Python (Tkinter).</p>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="px-3 py-1 rounded-full text-xs" style="background:rgba(96,165,250,0.06); color:#60a5fa">Python</span>
+              <span class="px-3 py-1 rounded-full text-xs" style="background:rgba(34,197,94,0.06); color:#86efac">Tkinter</span>
+            </div>
+            <a href="#" class="inline-flex items-center text-sm font-medium gradient-text hover:opacity-90 transition-colors">
+              Ver Projeto <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="panel rounded-xl overflow-hidden shadow-lg border border-slate-700 hover:border-indigo-500 transition-all duration-300 reveal">
+          <div class="relative h-48 overflow-hidden">
+            <img src="https://static.photos/technology/600x400/3" alt="Magic Toys" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent"></div>
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-white mb-2">Magic Toys</h3>
+            <p class="text-slate-300 mb-4">Loja fictícia com filtros e carrinho implementados em JS.</p>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="px-3 py-1 rounded-full text-xs" style="background:rgba(99,102,241,0.08); color:#a5b4fc">HTML5</span>
+              <span class="px-3 py-1 rounded-full text-xs" style="background:rgba(56,189,248,0.06); color:#67e8f9">CSS3</span>
+              <span class="px-3 py-1 rounded-full text-xs" style="background:rgba(250,204,21,0.08); color:#facc15">JavaScript</span>
+            </div>
+            <a href="#" class="inline-flex items-center text-sm font-medium gradient-text hover:opacity-90 transition-colors">
+              Ver Projeto <i class="fa-solid fa-arrow-up-right-from-square ml-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section id="skills" class="py-20 scroll-mt-20 relative panel">
     <div class="max-w-5xl mx-auto px-4">
-      <h2 class="text-3xl sm:text-4xl font-extrabold text-white text-center mb-12 reveal">Meus Projetos</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- Projeto 1 -->
-        <div class="card bg-slate-800/50 backdrop-blur-md rounded-2xl shadow-lg overflow-hidden transform transition duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-3 border border-slate-700 reveal">
-          <img src="https://via.placeholder.com/400x250/4c1d95/ffffff?text=Projeto+Web+App" alt="Projeto Web App" class="w-full h-48 object-cover transition duration-500 hover:scale-110" />
-          <div class="p-6 text-center">
-            <h3 class="text-xl font-semibold mb-2 text-slate-100">Site de Portfólio Pessoal</h3>
-            <p class="text-slate-300 mb-4">Um portfólio responsivo construído com HTML, CSS e JavaScript. Totalmente mobile-first.</p>
-            <div class="flex justify-center gap-2 mb-4">
-              <span class="bg-sky-400/10 text-sky-400 px-2 py-1 rounded text-xs">HTML</span>
-              <span class="bg-sky-400/10 text-sky-400 px-2 py-1 rounded text-xs">CSS</span>
-              <span class="bg-sky-400/10 text-sky-400 px-2 py-1 rounded text-xs">JS</span>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-center mb-12 reveal gradient-text">Minhas Habilidades</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Technical -->
+        <div class="rounded-xl p-6 border border-slate-700 reveal">
+          <h3 class="text-xl font-bold text-white mb-6 flex items-center">
+            <i class="fa-solid fa-laptop-code mr-3" style="color:var(--primary-2)"></i> Habilidades Técnicas
+          </h3>
+          <div class="space-y-5">
+            <div>
+              <div class="flex justify-between mb-2">
+                <span class="text-slate-300 font-medium">HTML/CSS</span>
+                <span class="text-slate-200">90%</span>
+              </div>
+              <div class="skill-bar">
+                <div class="skill-level" style="width:90%"></div>
+              </div>
             </div>
-            <a href="#" class="inline-block px-6 py-2 bg-sky-600 text-white rounded-full hover:bg-sky-700 transition duration-300 pulse">Ver no GitHub</a>
+            <div>
+              <div class="flex justify-between mb-2">
+                <span class="text-slate-300 font-medium">JavaScript</span>
+                <span class="text-slate-200">80%</span>
+              </div>
+              <div class="skill-bar">
+                <div class="skill-level" style="width:80%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between mb-2">
+                <span class="text-slate-300 font-medium">Python</span>
+                <span class="text-slate-200">75%</span>
+              </div>
+              <div class="skill-bar">
+                <div class="skill-level" style="width:75%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between mb-2">
+                <span class="text-slate-300 font-medium">Git / GitHub</span>
+                <span class="text-slate-200">70%</span>
+              </div>
+              <div class="skill-bar">
+                <div class="skill-level" style="width:70%"></div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Projeto 2 -->
-        <div class="card bg-slate-800/50 backdrop-blur-md rounded-2xl shadow-lg overflow-hidden transform transition duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-3 border border-slate-700 reveal">
-          <img src="https://via.placeholder.com/400x250/4c1d95/ffffff?text=App+Python" alt="App Python" class="w-full h-48 object-cover transition duration-500 hover:scale-110" />
-          <div class="p-6 text-center">
-            <h3 class="text-xl font-semibold mb-2 text-slate-100">Calculadora em Python</h3>
-            <p class="text-slate-300 mb-4">Uma calculadora simples e funcional usando Python, com interface gráfica básica.</p>
-            <div class="flex justify-center gap-2 mb-4">
-              <span class="bg-sky-400/10 text-sky-400 px-2 py-1 rounded text-xs">Python</span>
-              <span class="bg-sky-400/10 text-sky-400 px-2 py-1 rounded text-xs">Tkinter</span>
+        <!-- Soft -->
+        <div class="rounded-xl p-6 border border-slate-700 reveal">
+          <h3 class="text-xl font-bold text-white mb-6 flex items-center">
+            <i class="fa-solid fa-brain mr-3" style="color:var(--primary-1)"></i> Habilidades Sociais
+          </h3>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-slate-800/40 p-4 rounded-lg border border-slate-600 hover:border-indigo-500 transition-colors">
+              <i class="fa-solid fa-people-group text-xl mb-2" style="color:var(--primary-2)"></i>
+              <h4 class="font-medium text-white">Trabalho em Equipe</h4>
+              <p class="text-sm text-slate-300 mt-1">Colaboração em projetos em grupo</p>
             </div>
-            <a href="#" class="inline-block px-6 py-2 bg-sky-600 text-white rounded-full hover:bg-sky-700 transition duration-300 pulse">Ver no GitHub</a>
+            <div class="bg-slate-800/40 p-4 rounded-lg border border-slate-600 hover:border-indigo-500 transition-colors">
+              <i class="fa-solid fa-lightbulb text-xl mb-2" style="color:var(--primary-2)"></i>
+              <h4 class="font-medium text-white">Criatividade</h4>
+              <p class="text-sm text-slate-300 mt-1">Soluções fora da caixa</p>
+            </div>
+            <div class="bg-slate-800/40 p-4 rounded-lg border border-slate-600 hover:border-indigo-500 transition-colors">
+              <i class="fa-solid fa-comments text-xl mb-2" style="color:var(--primary-2)"></i>
+              <h4 class="font-medium text-white">Comunicação</h4>
+              <p class="text-sm text-slate-300 mt-1">Clareza ao explicar ideias</p>
+            </div>
+            <div class="bg-slate-800/40 p-4 rounded-lg border border-slate-600 hover:border-indigo-500 transition-colors">
+              <i class="fa-solid fa-clock-rotate-left text-xl mb-2" style="color:var(--primary-2)"></i>
+              <h4 class="font-medium text-white">Adaptabilidade</h4>
+              <p class="text-sm text-slate-300 mt-1">Aprendo rápido novas tecnologias</p>
+            </div>
           </div>
         </div>
+      </div>
 
-        <!-- Projeto 3 -->
-        <div class="card bg-slate-800/50 backdrop-blur-md rounded-2xl shadow-lg overflow-hidden transform transition duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-3 border border-slate-700 reveal">
-          <img src="https://via.placeholder.com/400x250/4c1d95/ffffff?text=Jogo+JS" alt="Jogo JS" class="w-full h-48 object-cover transition duration-500 hover:scale-110" />
-          <div class="p-6 text-center">
-            <h3 class="text-xl font-semibold mb-2 text-slate-100">Magic Toys</h3>
-            <p class="text-slate-300 mb-4">loja de brinquedos feito com JavaScript puro, HTML e CSS.</p>
-            <div class="flex justify-center gap-2 mb-4">
-              <span class="bg-sky-400/10 text-sky-400 px-2 py-1 rounded text-xs">HTML</span>
-              <span class="bg-sky-400/10 text-sky-400 px-2 py-1 rounded text-xs">CSS</span>
-              <span class="bg-sky-400/10 text-sky-400 px-2 py-1 rounded text-xs">JS</span>
-            </div>
-            <a href="#" class="inline-block px-6 py-2 bg-sky-600 text-white rounded-full hover:bg-sky-700 transition duration-300 pulse">Ver no GitHub</a>
+      <!-- Tools -->
+      <div class="mt-12 rounded-xl p-6 border border-slate-700 reveal">
+        <h3 class="text-xl font-bold text-white mb-6 flex items-center">
+          <i class="fa-solid fa-screwdriver-wrench mr-3" style="color:var(--primary-3)"></i> Ferramentas & Tecnologias
+        </h3>
+        <div class="flex flex-wrap gap-4 justify-center">
+          <div class="flex flex-col items-center p-4">
+            <i class="fa-brands fa-html5 text-4xl mb-2" style="color:#E44D26"></i>
+            <span class="text-sm text-slate-300">HTML5</span>
+          </div>
+          <div class="flex flex-col items-center p-4">
+            <i class="fa-brands fa-css3-alt text-4xl mb-2" style="color:#264DE4"></i>
+            <span class="text-sm text-slate-300">CSS3</span>
+          </div>
+          <div class="flex flex-col items-center p-4">
+            <i class="fa-brands fa-js text-4xl mb-2" style="color:#F0DB4F"></i>
+            <span class="text-sm text-slate-300">JavaScript</span>
+          </div>
+          <div class="flex flex-col items-center p-4">
+            <i class="fa-brands fa-python text-4xl mb-2" style="color:#306998"></i>
+            <span class="text-sm text-slate-300">Python</span>
+          </div>
+          <div class="flex flex-col items-center p-4">
+            <i class="fa-brands fa-git-alt text-4xl mb-2" style="color:#F1502F"></i>
+            <span class="text-sm text-slate-300">Git</span>
+          </div>
+          <div class="flex flex-col items-center p-4">
+            <i class="fa-brands fa-github text-4xl mb-2" style="color:#fff"></i>
+            <span class="text-sm text-slate-300">GitHub</span>
           </div>
         </div>
       </div>
     </div>
   </section>
-<!-- HABILIDADES MODERNA -->
-<section id="habilidades" class="py-20 bg-slate-900 scroll-mt-20 relative">
-  <div class="max-w-6xl mx-auto px-4">
-    <h2 class="text-3xl sm:text-4xl font-extrabold text-white text-center mb-12 reveal">Habilidades</h2>
 
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-      <!-- Card Habilidade -->
-      <div class="bg-slate-800 rounded-xl p-6 flex flex-col items-center justify-center shadow-lg hover:shadow-sky-500/50 transform transition duration-500 hover:-translate-y-2 reveal">
-        <i class="fa-brands fa-html5 text-4xl text-[#E44D26] animate-pulse-icon mb-2"></i>
-        <span class="text-sky-400 font-semibold">HTML5</span>
-        <div class="w-full h-1 bg-sky-600 mt-4 rounded-full"></div>
-      </div>
-
-      <div class="bg-slate-800 rounded-xl p-6 flex flex-col items-center justify-center shadow-lg hover:shadow-sky-500/50 transform transition duration-500 hover:-translate-y-2 reveal">
-        <i class="fa-brands fa-css3-alt text-4xl text-[#264DE4] animate-pulse-icon mb-2"></i>
-        <span class="text-sky-400 font-semibold">CSS3</span>
-        <div class="w-full h-1 bg-sky-600 mt-4 rounded-full"></div>
-      </div>
-
-      <div class="bg-slate-800 rounded-xl p-6 flex flex-col items-center justify-center shadow-lg hover:shadow-sky-500/50 transform transition duration-500 hover:-translate-y-2 reveal">
-        <i class="fa-brands fa-js-square text-4xl text-[#F0DB4F] animate-pulse-icon mb-2"></i>
-        <span class="text-sky-400 font-semibold">JavaScript</span>
-        <div class="w-full h-1 bg-sky-600 mt-4 rounded-full"></div>
-      </div>
-
-      <div class="bg-slate-800 rounded-xl p-6 flex flex-col items-center justify-center shadow-lg hover:shadow-sky-500/50 transform transition duration-500 hover:-translate-y-2 reveal">
-        <i class="fa-brands fa-python text-4xl text-[#306998] animate-pulse-icon mb-2"></i>
-        <span class="text-sky-400 font-semibold">Python</span>
-        <div class="w-full h-1 bg-sky-600 mt-4 rounded-full"></div>
-      </div>
-
-      <div class="bg-slate-800 rounded-xl p-6 flex flex-col items-center justify-center shadow-lg hover:shadow-sky-500/50 transform transition duration-500 hover:-translate-y-2 reveal">
-        <i class="fa-brands fa-git-alt text-4xl text-[#F1502F] animate-pulse-icon mb-2"></i>
-        <span class="text-sky-400 font-semibold">Git</span>
-        <div class="w-full h-1 bg-sky-600 mt-4 rounded-full"></div>
-      </div>
-
-      <div class="bg-slate-800 rounded-xl p-6 flex flex-col items-center justify-center shadow-lg hover:shadow-sky-500/50 transform transition duration-500 hover:-translate-y-2 reveal">
-        <i class="fa-brands fa-react text-4xl text-[#61DAFB] animate-pulse-icon mb-2"></i>
-        <span class="text-sky-400 font-semibold">React.js</span>
-        <div class="w-full h-1 bg-sky-600 mt-4 rounded-full"></div>
-      </div>
+  <!-- Contact -->
+  <section id="contact" class="py-20 scroll-mt-20 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-10 left-10 w-72 h-72" style="background:linear-gradient(90deg,var(--primary-1),var(--primary-2)); border-radius:999px; mix-blend-mode:multiply; filter:blur(40px);"></div>
+      <div class="absolute top-40 right-10 w-72 h-72" style="background:linear-gradient(90deg,var(--primary-2),var(--primary-3)); border-radius:999px; mix-blend-mode:multiply; filter:blur(40px);"></div>
     </div>
-  </div>
-</section>
 
-  <!-- CONTATO -->
-<section id="contato" class="py-16 sm:py-20 lg:py-24 bg-slate-900 scroll-mt-20 relative overflow-hidden">
-  <!-- Background decorativo interativo -->
-  <div class="absolute inset-0 opacity-5">
-    <div class="absolute top-10 left-10 w-72 h-72 bg-blue-600 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
-    <div class="absolute top-40 right-10 w-72 h-72 bg-sky-600 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
-    <div class="absolute -bottom-8 left-20 w-72 h-72 bg-cyan-600 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
-  </div>
-  
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-    <!-- Título com animação de revelação -->
-    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-center mb-12 sm:mb-16 bg-gradient-to-r from-sky-400 via-blue-500 to-cyan-400 bg-clip-text text-transparent animate-fade-in-up">
-      Entre em Contato
-    </h2>
-    
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-      <!-- Informações de Contato - Lado Esquerdo -->
-      <div class="space-y-6 animate-fade-in-left">
-        <p class="text-base sm:text-lg lg:text-xl text-slate-300 leading-relaxed font-medium">
-          Gostou do meu trabalho? Vamos conversar sobre oportunidades ou colaborações! Estou animado para conectar e criar algo incrível juntos.
-        </p>
-        
-        <!-- Lista de Contatos com Hovers Interativos -->
-        <div class="space-y-5 mt-8">
-          <!-- Email -->
-          <div class="group flex items-center gap-4 p-4 bg-slate-800/60 backdrop-blur-sm rounded-2xl border border-slate-700 shadow-md hover:shadow-xl hover:border-sky-500/70 transition-all duration-500 hover:scale-105 hover:bg-slate-700/50">
-            <div class="relative">
-              <i class="fa-solid fa-envelope text-2xl text-sky-400 group-hover:text-sky-300 transition-all duration-300 hover:scale-110 hover:rotate-12"></i>
-              <div class="absolute -inset-1 bg-gradient-to-r from-sky-500 to-cyan-500 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    <div class="max-w-5xl mx-auto px-4 relative z-10">
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-center mb-12 reveal gradient-text">Fale Comigo</h2>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        <!-- Info -->
+        <div class="space-y-6 reveal">
+          <p class="text-lg text-slate-300 leading-relaxed font-medium">
+            Tem um projeto ou quer trocar uma ideia? Estou aberto a colaborações e novos desafios.
+          </p>
+
+          <div class="space-y-5 mt-8">
+            <!-- Email -->
+            <div class="group flex items-center gap-4 p-4 panel rounded-xl border border-slate-700 shadow-md hover:shadow-lg hover:border-indigo-500 transition-all duration-300">
+              <div class="w-12 h-12 rounded-full flex items-center justify-center text-indigo-300">
+                <i class="fa-solid fa-envelope text-xl"></i>
+              </div>
+              <div>
+                <span class="text-sm font-semibold text-slate-400">Email</span>
+                <p class="text-slate-300 font-medium">
+                  <a href="mailto:joaovictormorais2101@gmail.com" class="hover:underline">joaovictormorais2101@gmail.com</a>
+                </p>
+              </div>
             </div>
-            <div>
-              <span class="text-sm font-semibold text-slate-400 group-hover:text-sky-300 transition-colors">Email</span>
-              <p class="text-slate-300 font-medium break-all hover:underline transition-all">
-                <a href="mailto:joaovictormorais2101@gmail.com" class="hover:text-sky-400">joaovictormorais2101@gmail.com</a>
-              </p>
+
+            <!-- GitHub -->
+            <div class="group flex items-center gap-4 p-4 panel rounded-xl border border-slate-700 shadow-md hover:shadow-lg hover:border-indigo-500 transition-all duration-300">
+              <div class="w-12 h-12 rounded-full flex items-center justify-center text-indigo-300">
+                <i class="fa-brands fa-github text-xl"></i>
+              </div>
+              <div>
+                <span class="text-sm font-semibold text-slate-400">GitHub</span>
+                <p class="text-slate-300 font-medium">
+                  <a href="https://github.com/joaovictormoraislima08" target="_blank" class="hover:underline">joaovictormoraislima08</a>
+                </p>
+              </div>
+            </div>
+
+            <!-- Phone -->
+            <div class="group flex items-center gap-4 p-4 panel rounded-xl border border-slate-700 shadow-md hover:shadow-lg hover:border-indigo-500 transition-all duration-300">
+              <div class="w-12 h-12 rounded-full flex items-center justify-center text-indigo-300">
+                <i class="fa-solid fa-phone text-xl"></i>
+              </div>
+              <div>
+                <span class="text-sm font-semibold text-slate-400">Telefone</span>
+                <p class="text-slate-300 font-medium">
+                  <a href="tel:+5511999999999" class="hover:underline">+55 11 99999-9999</a>
+                </p>
+              </div>
             </div>
           </div>
-          
-          <!-- GitHub -->
-          <div class="group flex items-center gap-4 p-4 bg-slate-800/60 backdrop-blur-sm rounded-2xl border border-slate-700 shadow-md hover:shadow-xl hover:border-sky-500/70 transition-all duration-500 hover:scale-105 hover:bg-slate-700/50">
-            <div class="relative">
-              <i class="fa-brands fa-github text-2xl text-sky-400 group-hover:text-sky-300 transition-all duration-300 hover:scale-110 hover:rotate-12"></i>
-              <div class="absolute -inset-1 bg-gradient-to-r from-sky-500 to-cyan-500 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </div>
-            <div>
-              <span class="text-sm font-semibold text-slate-400 group-hover:text-sky-300 transition-colors">GitHub</span>
-              <p class="text-slate-300 font-medium">
-                <a href="https://github.com/joaovictormoraislima08" target="_blank" class="hover:underline transition-all hover:text-sky-400">joaovictormoraislima08</a>
-              </p>
-            </div>
-          </div>
-          
-          <!-- Telefone -->
-          <div class="group flex items-center gap-4 p-4 bg-slate-800/60 backdrop-blur-sm rounded-2xl border border-slate-700 shadow-md hover:shadow-xl hover:border-sky-500/70 transition-all duration-500 hover:scale-105 hover:bg-slate-700/50">
-            <div class="relative">
-              <i class="fa-solid fa-phone text-2xl text-sky-400 group-hover:text-sky-300 transition-all duration-300 hover:scale-110 hover:rotate-12"></i>
-              <div class="absolute -inset-1 bg-gradient-to-r from-sky-500 to-cyan-500 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </div>
-            <div>
-              <span class="text-sm font-semibold text-slate-400 group-hover:text-sky-300 transition-colors">Telefone</span>
-              <p class="text-slate-300 font-medium hover:underline transition-all">
-                <a href="tel:+11999999999" class="hover:text-sky-400">(11) 99999-9999</a>
-              </p>
-            </div>
+
+          <!-- Social -->
+          <div class="flex gap-4 mt-8 pt-6 border-t border-slate-700">
+            <a href="#" class="w-10 h-10 rounded-full panel text-indigo-300 flex items-center justify-center"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="w-10 h-10 rounded-full panel text-indigo-300 flex items-center justify-center"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="w-10 h-10 rounded-full panel text-indigo-300 flex items-center justify-center"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="w-10 h-10 rounded-full panel text-indigo-300 flex items-center justify-center"><i class="fab fa-discord"></i></a>
           </div>
         </div>
-        
-        <!-- Redes Sociais Adicionais (opcional, para mais interatividade) -->
-        <div class="flex justify-center lg:justify-start gap-4 mt-8 pt-6 border-t border-slate-700">
-          <a href="#" class="p-3 rounded-full bg-slate-700 hover:bg-slate-600 text-sky-400 hover:text-sky-300 transition-all duration-300 hover:scale-110 shadow-md hover:shadow-lg">
-            <i class="fab fa-linkedin text-xl"></i>
+
+        <!-- Form -->
+        <div class="reveal">
+          <form class="space-y-5 panel p-6 sm:p-8 rounded-xl border border-slate-700 shadow-lg hover:shadow-xl transition-all duration-300" onsubmit="event.preventDefault(); alert('Mensagem enviada (simulada) — implemente back-end para envio real.');">
+            <div class="relative">
+              <input type="text" id="name" required class="peer w-full bg-transparent border-2 border-slate-600 rounded-lg px-4 py-3 pl-12 text-sm focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20 outline-none transition-all duration-300 placeholder-transparent text-white" placeholder=" " />
+              <label for="name" class="absolute left-12 top-3 text-sm text-slate-400 transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:top-1 peer-focus:text-xs peer-focus:text-indigo-300 peer-valid:top-1 peer-valid:text-xs peer-valid:text-indigo-300">
+                Seu nome
+              </label>
+              <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-indigo-300"></i>
+            </div>
+
+            <div class="relative">
+              <input type="email" id="email" required class="peer w-full bg-transparent border-2 border-slate-600 rounded-lg px-4 py-3 pl-12 text-sm focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20 outline-none transition-all duration-300 placeholder-transparent text-white" placeholder=" " />
+              <label for="email" class="absolute left-12 top-3 text-sm text-slate-400 transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:top-1 peer-focus:text-xs peer-focus:text-indigo-300 peer-valid:top-1 peer-valid:text-xs peer-valid:text-indigo-300">
+                Seu e-mail
+              </label>
+              <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-indigo-300"></i>
+            </div>
+
+            <div class="relative">
+              <textarea id="message" rows="5" required class="peer w-full bg-transparent border-2 border-slate-600 rounded-lg px-4 py-3 pl-12 text-sm focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20 outline-none transition-all duration-300 placeholder-transparent text-white resize-none" placeholder=" "></textarea>
+              <label for="message" class="absolute left-12 top-3 text-sm text-slate-400 transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:top-1 peer-focus:text-xs peer-focus:text-indigo-300 peer-valid:top-1 peer-valid:text-xs peer-valid:text-indigo-300">
+                Sua mensagem
+              </label>
+              <i class="fa-solid fa-comment-dots absolute left-4 top-4 text-indigo-300"></i>
+            </div>
+
+            <button type="submit" class="w-full btn-gradient py-3 rounded-lg font-medium text-sm shadow-md hover:shadow-lg transition-all duration-300 relative overflow-hidden group">
+              <span class="relative z-10 flex items-center justify-center gap-2">
+                Enviar Mensagem
+                <i class="fa-solid fa-paper-plane group-hover:translate-x-1 transition-transform duration-300"></i>
+              </span>
+              <div class="absolute inset-0 bg-white/5 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"></div>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900/95 panel border-t border-slate-800 py-8">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="text-xl font-bold tracking-wider code-font mb-4 md:mb-0">
+          <span style="color:var(--primary-1)">&lt;</span>JV<span style="color:var(--primary-1)">/&gt;</span>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="https://github.com/joaovictormoraislima08" target="_blank" class="text-slate-300 hover:opacity-90 transition-colors">
+            <i class="fa-brands fa-github text-xl"></i>
           </a>
-          <a href="#" class="p-3 rounded-full bg-slate-700 hover:bg-slate-600 text-sky-400 hover:text-sky-300 transition-all duration-300 hover:scale-110 shadow-md hover:shadow-lg">
-            <i class="fab fa-twitter text-xl"></i>
-          </a>
-          <a href="#" class="p-3 rounded-full bg-slate-700 hover:bg-slate-600 text-sky-400 hover:text-sky-300 transition-all duration-300 hover:scale-110 shadow-md hover:shadow-lg">
-            <i class="fab fa-instagram text-xl"></i>
+          <a href="mailto:joaovictormorais2101@gmail.com" class="text-slate-300 hover:opacity-90 transition-colors">
+            <i class="fa-solid fa-envelope text-xl"></i>
           </a>
         </div>
       </div>
-      
-      <!-- Formulário - Lado Direito -->
-      <div class="animate-fade-in-right">
-        <form class="space-y-5 max-w-md mx-auto lg:mx-0 bg-slate-800/60 backdrop-blur-sm p-6 sm:p-8 rounded-2xl border border-slate-700 shadow-xl hover:shadow-2xl transition-all duration-500">
-          <!-- Input Nome com Label Flutuante -->
-          <div class="relative">
-            <input 
-              type="text" 
-              id="nome" 
-              required
-              class="peer w-full border-2 border-slate-600 rounded-xl p-4 pl-12 pr-4 text-sm sm:text-base focus:border-sky-500 focus:ring-4 focus:ring-sky-500/50 outline-none transition-all duration-300 bg-slate-700/50 backdrop-blur-sm placeholder-transparent hover:border-sky-600 text-white"
-              placeholder=" "
-            >
-            <label for="nome" class="absolute left-12 top-4 text-xs sm:text-sm text-slate-400 transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:top-0 peer-focus:text-xs peer-focus:text-sky-400 peer-valid:top-0 peer-valid:text-xs peer-valid:text-sky-400">
-              Seu Nome
-            </label>
-            <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-sky-500 peer-focus:text-sky-400 transition-colors"></i>
-          </div>
-          
-          <!-- Input Email -->
-          <div class="relative">
-            <input 
-              type="email" 
-              id="email" 
-              required
-              class="peer w-full border-2 border-slate-600 rounded-xl p-4 pl-12 pr-4 text-sm sm:text-base focus:border-sky-500 focus:ring-4 focus:ring-sky-500/50 outline-none transition-all duration-300 bg-slate-700/50 backdrop-blur-sm placeholder-transparent hover:border-sky-600 text-white"
-              placeholder=" "
-            >
-            <label for="email" class="absolute left-12 top-4 text-xs sm:text-sm text-slate-400 transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:top-0 peer-focus:text-xs peer-focus:text-sky-400 peer-valid:top-0 peer-valid:text-xs peer-valid:text-sky-400">
-              Seu E-mail
-            </label>
-            <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-sky-500 peer-focus:text-sky-400 transition-colors"></i>
-          </div>
-          
-          <!-- Textarea Mensagem -->
-          <div class="relative">
-            <textarea 
-              id="mensagem" 
-              rows="4" 
-              required
-              class="peer w-full border-2 border-slate-600 rounded-xl p-4 pl-12 pr-4 text-sm sm:text-base focus:border-sky-500 focus:ring-4 focus:ring-sky-500/50 outline-none transition-all duration-300 bg-slate-700/50 backdrop-blur-sm placeholder-transparent hover:border-sky-600 resize-none text-white"
-              placeholder=" "
-            ></textarea>
-            <label for="mensagem" class="absolute left-12 top-4 text-xs sm:text-sm text-slate-400 transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:top-0 peer-focus:text-xs peer-focus:text-sky-400 peer-valid:top-0 peer-valid:text-xs peer-valid:text-sky-400">
-              Sua Mensagem
-            </label>
-            <i class="fa-solid fa-comment absolute left-4 top-4 text-sky-500 peer-focus:text-sky-400 transition-colors"></i>
-          </div>
-          
-          <!-- Botão Submit Interativo -->
-          <button 
-            type="submit" 
-            class="w-full bg-gradient-to-r from-sky-600 via-blue-600 to-cyan-600 text-white py-4 rounded-xl font-semibold text-base sm:text-lg shadow-lg hover:shadow-xl hover:scale-105 focus:ring-4 focus:ring-sky-400/50 transition-all duration-300 relative overflow-hidden group"
-          >
-            <span class="relative z-10 flex items-center justify-center gap-2">
-              Enviar Mensagem
-              <i class="fa-solid fa-paper-plane group-hover:translate-x-1 transition-transform duration-300"></i>
-            </span>
-            <!-- Efeito Ripple no Botão -->
-            <div class="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out"></div>
-          </button>
-        </form>
+      <div class="mt-6 pt-6 border-t border-slate-800 text-center text-sm text-slate-400">
+        <p>© 2025 João Victor. Todos os direitos reservados.</p>
+        <p class="mt-2">Feito com <i class="fa-solid fa-heart" style="color:var(--primary-2)"></i> e <i class="fa-solid fa-code" style="color:var(--primary-1)"></i></p>
       </div>
     </div>
-  </div>
-</section>
+  </footer>
 
+  <!-- Back to Top -->
+  <button id="back-to-top" class="fixed bottom-8 right-8 w-12 h-12 rounded-full panel flex items-center justify-center text-white transition-all duration-300 opacity-0 invisible hover:scale-105">
+    <i class="fa-solid fa-arrow-up" style="color:var(--primary-2)"></i>
+  </button>
 
-  <!-- SIDEBAR MOBILE -->
-  <div id="sidebar" class="fixed top-0 right-0 w-80 max-w-full h-full bg-slate-900 shadow-2xl z-[100] transform translate-x-full transition-transform duration-500 overflow-y-auto">
-    <div class="flex justify-between items-center p-4 border-b">
-      <h2 class="text-2xl font-bold text-sky-400">Menu</h2>
-      <button id="close-sidebar" class="text-2xl hover:text-red-500 transition"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <nav class="p-6 flex flex-col gap-6 text-slate-200">
-      <a href="#home" class="hover:text-sky-400 transition">Início</a>
-      <a href="#sobre" class="hover:text-sky-400 transition">Sobre Mim</a>
-      <a href="#projetos" class="hover:text-sky-400 transition">Projetos</a>
-      <a href="#habilidades" class="hover:text-sky-400 transition">Habilidades</a>
-      <a href="#contato" class="hover:text-sky-400 transition">Contato</a>
-    </nav>
-  </div>
-
-  <!-- JS -->
+  <!-- Scripts -->
   <script>
-    // Menu Mobile
+    // Mobile Menu Toggle
     const menuBtn = document.getElementById('menu-btn');
-    const menu = document.getElementById('sidebar');
-    const closeSidebar = document.getElementById('close-sidebar');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const closeMenuBtn = document.getElementById('close-menu-btn');
+    const mobileMenuLinks = document.querySelectorAll('.mobile-menu-link');
 
-    menuBtn.addEventListener('click', () => { menu.classList.remove('translate-x-full'); });
-    closeSidebar.addEventListener('click', () => { menu.classList.add('translate-x-full'); });
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.remove('translate-x-full');
+    });
 
-    // Scroll Reveal
+    closeMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.add('translate-x-full');
+    });
+
+    mobileMenuLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('translate-x-full');
+      });
+    });
+
+    // Scroll Reveal Animation
     const reveals = document.querySelectorAll('.reveal');
-    window.addEventListener('scroll', () => {
+    window.addEventListener('scroll', revealOnScroll);
+    function revealOnScroll() {
       for (let i = 0; i < reveals.length; i++) {
         const windowHeight = window.innerHeight;
         const revealTop = reveals[i].getBoundingClientRect().top;
         const revealPoint = 150;
-        if(revealTop < windowHeight - revealPoint) { reveals[i].classList.add('active'); }
+        if (revealTop < windowHeight - revealPoint) {
+          reveals[i].classList.add('active');
+        }
+      }
+    }
+
+    // Header Scroll Effect
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        header.classList.add('shadow-lg', 'shadow-black/20');
+      } else {
+        header.classList.remove('shadow-lg', 'shadow-black/20');
       }
     });
 
-    // Skill Bar Animation
+    // Back to Top Button
+    const backToTopBtn = document.getElementById('back-to-top');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        backToTopBtn.classList.remove('opacity-0', 'invisible');
+        backToTopBtn.classList.add('opacity-100', 'visible');
+      } else {
+        backToTopBtn.classList.remove('opacity-100', 'visible');
+        backToTopBtn.classList.add('opacity-0', 'invisible');
+      }
+    });
+
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Initialize on load
     document.addEventListener('DOMContentLoaded', () => {
-      document.querySelector('.animate-skill[style*="growHTML"]').style.width = '90%';
-      document.querySelector('.animate-skill[style*="growJS"]').style.width = '80%';
-      document.querySelector('.animate-skill[style*="growPython"]').style.width = '75%';
-      document.querySelector('.animate-skill[style*="growGit"]').style.width = '70%';
+      revealOnScroll();
     });
   </script>
-
 </body>
 </html>
